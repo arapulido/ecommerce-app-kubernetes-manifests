@@ -2,19 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: advertisements 
+    service: advertisements
+    app: ecommerce
   name: advertisements 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: advertisements 
+      service: advertisements
+      app: ecommerce
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        run: advertisements 
+        service: advertisements
+        app: ecommerce
     spec:
       containers:
       - image: arapulido/ecommerce-spree-ads:latest
@@ -27,7 +30,10 @@ spec:
           - name: FLASK_DEBUG
             value: "1"
           - name: POSTGRES_PASSWORD
-            value: "password"
+            valueFrom:
+              secretKeyRef:
+                key: pw
+                name: db-password
           - name: POSTGRES_USER
             value: "user"
           - name: DATADOG_SERVICE_NAME
@@ -48,7 +54,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    run: advertisements
+    service: advertisements
+    app: ecommerce
   name: advertisements
 spec:
   ports:
@@ -56,5 +63,6 @@ spec:
     protocol: TCP
     targetPort: 5002
   selector:
-    run: advertisements
+    service: advertisements
+    app: ecommerce
 status:

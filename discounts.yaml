@@ -2,19 +2,22 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    run: discounts
+    app: ecommerce
+    service: discounts
   name: discounts
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: discounts
+      service: discounts
+      app: ecommerce
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        run: discounts
+        service: discounts
+        app: ecommerce
     spec:
       containers:
       - image: arapulido/ecommerce-spree-discounts:latest
@@ -27,7 +30,10 @@ spec:
           - name: FLASK_DEBUG
             value: "1"
           - name: POSTGRES_PASSWORD
-            value: "password"
+            valueFrom:
+              secretKeyRef:
+                key: pw
+                name: db-password
           - name: POSTGRES_USER
             value: "user"
           - name: DATADOG_SERVICE_NAME
@@ -48,7 +54,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    run: discounts
+    service: discounts
+    app: ecommerce
   name: discounts
 spec:
   ports:
@@ -56,6 +63,7 @@ spec:
     protocol: TCP
     targetPort: 5001
   selector:
-    run: discounts
+    service: discounts
+    app: ecommerce
   sessionAffinity: None
   type: ClusterIP
