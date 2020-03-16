@@ -66,8 +66,8 @@ spec:
   ports:
   - port: 3000
     protocol: TCP
-    targetPort: 3000
+    nodePort: 30001
   selector:
     service: frontend
     app: ecommerce
-  type: ClusterIP
+  type: NodePort
