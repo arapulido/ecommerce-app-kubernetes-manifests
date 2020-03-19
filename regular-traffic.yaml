@@ -4,7 +4,6 @@ metadata:
   labels:
     run: regular-traffic 
   name: regular-traffic 
-  namespace: datadog
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
